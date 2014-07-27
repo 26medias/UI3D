@@ -37,7 +37,7 @@
 						counter = 0;
 					}
 					callback(Math.sin(counter*Math.PI/180)*100);
-				}, 100);
+				}, 50);
 				return {
 					stop:	function() {
 						clearInterval(itv);
@@ -51,23 +51,25 @@
 				var box3d1 	= new window.ui3d.box($('#box01'), {
 					duration:	0.5
 				});
+				var box3d1bg 	= new window.ui3d.bg($('#box01'), 'http://i.imgur.com/U24orBL.jpg', {scaleUp: true, redraw: 'auto'});
 				box3d1.center(true, true);
-				box3d1.options.duration = 0.1;
-				var sin1 = sinWave(0, function(v) {box3d1.move({z:	v});});
+				box3d1.options.duration = 0.05;
+				box3d1.set('opacity', 0.7);
+				box3d1.set('scale', 0.7);
+				box3d1.redraw();
+				//var sin1 = sinWave(0, function(v) {box3d1.move({z:	v});});
 				
 				var box3d2 	= new window.ui3d.box($('#box02'), {
 					duration:	0.5
 				});
-				box3d2.center(true, true);
-				box3d2.options.duration = 0.1;
-				var sin2 = sinWave(30, function(v) {box3d2.move({z:	v});});
+				var box3d2bg 	= new window.ui3d.bg($('#box02'), 'http://i.imgur.com/9lavKZs.jpg', {scaleUp: true, redraw: 'auto'});
+				box3d2.center(true, false);
 				
 				var box3d3 	= new window.ui3d.box($('#box03'), {
 					duration:	0.5
 				});
-				box3d3.center(true, true);
-				box3d3.options.duration = 0.1;
-				var sin3 = sinWave(60, function(v) {box3d3.move({z:	v});});
+				var box3d3bg 	= new window.ui3d.bg($('#box03'), 'http://i.imgur.com/0J9pHMP.gif', {scaleUp: true, redraw: 'auto'});
+				box3d3.center(false, true);
 				
 				
 				

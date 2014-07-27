@@ -126,7 +126,8 @@
 			}
 		};
 		
-		this.properties		= this.reset({});
+		this.properties		= this.reset({});	// The final one, used by GSAP
+		this._properties	= this.reset({});	// The stable one, used by the user
 		
 		this.element.css({
 			position:	'absolute',
@@ -165,20 +166,29 @@
 		this.redraw();
 		return this;
 	}
-	ui3d.prototype.set = function(prop, val) {
-		this.properties[prop] = val;
+	ui3d.prototype.set = function(prop, val, relative) {
+		if (relative) {
+			this.properties[prop] 	= val*this._properties[prop];
+		} else {
+			this._properties[prop] 	= val;
+			this.properties[prop] 	= val;
+		}
+		
 		return this;
 	}
 	ui3d.prototype.incr = function(prop, val) {
 		this.properties[prop] += val;
+		this._properties[prop] += val;
 		return this;
 	}
 	ui3d.prototype.decr = function(prop, val) {
 		this.properties[prop] -= val;
+		this._properties[prop] -= val;
 		return this;
 	}
 	ui3d.prototype.multi = function(prop, val) {
 		this.properties[prop] *= val;
+		this._properties[prop] *= val;
 		
 		return this;
 	}
@@ -208,8 +218,8 @@
 						opacity 	= 1;
 					}
 					
-					this.set('scale', 		scale);
-					this.set('opacity', 	opacity);
+					this.set('scale', 		scale, true);
+					this.set('opacity', 	opacity, true);
 				break;
 			}
 		}
