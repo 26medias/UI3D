@@ -114,6 +114,10 @@
 				h:		false,
 				v:		false,
 				ref:	$(window)
+			},
+			axis:		{
+				h:		true,
+				v:		true
 			}
 		}, options);
 		
@@ -128,6 +132,11 @@
 		
 		this.properties		= this.reset({});	// The final one, used by GSAP
 		this._properties	= this.reset({});	// The stable one, used by the user
+		this.cssproperties	= {left:0,top:0};	// The final one, used by GSAP for CSS interpolations
+		
+		this.overwrite		= {
+			x:	0
+		};
 		
 		this.element.css({
 			position:	'absolute',
@@ -173,7 +182,6 @@
 			this._properties[prop] 	= val;
 			this.properties[prop] 	= val;
 		}
-		
 		return this;
 	}
 	ui3d.prototype.incr = function(prop, val) {
@@ -190,6 +198,31 @@
 		this.properties[prop] *= val;
 		this._properties[prop] *= val;
 		
+		return this;
+	}
+	ui3d.prototype.rotate = function(axis, value, origin) {
+		if (!origin) {
+			origin = "left top";
+		}
+		this.set('rotation'+axis.toUpperCase(), value);
+		this.set('transformOrigin', origin);
+		return this;
+	}
+	ui3d.prototype.xalign = function() {
+		var original 		= this.properties.x*1;
+		
+		this.overwrite.x	= original;
+		this.redraw();
+		/*
+		this.element.css({
+			left:	original
+		});
+		this.properties.x = 0;
+		this._properties.x = 0;
+		//this.redraw();
+		console.log("this._properties",this._properties);
+		console.log("this.properties",this.properties);
+		*/
 		return this;
 	}
 	ui3d.prototype.map = function(x,  in_min,  in_max,  out_min,  out_max) {
@@ -232,6 +265,7 @@
 		if (this.options.center.h) {
 			var cw 			= this.options.center.ref.width();
 			var ew 			= this.element.outerWidth();
+			//this.overwrite.x= (cw-ew)/2;
 			this.set('x', (cw-ew)/2);
 		}
 		if (this.options.center.v) {
@@ -240,6 +274,18 @@
 			this.set('y', (ch-eh)/2);
 		}
 		
+		if (this.options.axis.h) {
+			var w2						= this.element.outerWidth()/2;
+			this.cssproperties.left 	= this.properties.x;
+			this.set('x', 0);
+		}
+		/*if (this.options.axis.v) {
+			var h2						= this.element.outerHeight()/2;
+			this.cssproperties.top 		= this.properties.y + w2;
+			this.set('y', 0-h2);
+		}*/
+		
+		TweenLite.to(this.element, this.options.duration, _.clone(this.cssproperties));
 		TweenMax.to(this.element, this.options.duration, _.clone(this.properties));
 		
 		return this;

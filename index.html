@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
 	<head>
-		<title></title>
+		<title>Twenty-Six Medias's UI3D</title>
 		<meta charset="UTF-8">
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.13.1/TweenMax.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -12,13 +12,8 @@
 	</head>
 	<body class="ui3d">
 		
-		<div class="ui3d-box">
-			<input type="text" id="setval" />
-			<div id="btnset">set</div>
-		</div>
-		
 		<div class="ui3d-box medium" id="box01">
-			01
+			Hello World!
 		</div>
 		<div class="ui3d-box medium" id="box02">
 			02
@@ -28,16 +23,19 @@
 		</div>
 		
 		<script type="text/javascript">
-			
-			function sinWave(seed, callback) {
+			var map = function(x,  in_min,  in_max,  out_min,  out_max) {
+				return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+			}
+			function sinWave(seed, min, max, callback) {
 				var counter = seed;
 				var itv = setInterval(function() {
 					counter += 5;
 					if (counter >= 360) {
 						counter = 0;
 					}
-					callback(Math.sin(counter*Math.PI/180)*100);
-				}, 50);
+					var x = Math.sin(counter*Math.PI/180)*100;
+					callback(map(x, -100, 100, min, max));
+				}, 100);
 				return {
 					stop:	function() {
 						clearInterval(itv);
@@ -53,35 +51,37 @@
 				});
 				var box3d1bg 	= new window.ui3d.bg($('#box01'), 'http://i.imgur.com/U24orBL.jpg', {scaleUp: true, redraw: 'auto'});
 				box3d1.center(true, true);
-				box3d1.options.duration = 0.05;
-				box3d1.set('opacity', 0.7);
-				box3d1.set('scale', 0.7);
+				box3d1.rotate('x', -25, "50% 50% 100%");
+				box3d1.set('opacity', 0.5);
 				box3d1.redraw();
+				
 				//var sin1 = sinWave(0, function(v) {box3d1.move({z:	v});});
 				
 				var box3d2 	= new window.ui3d.box($('#box02'), {
 					duration:	0.5
 				});
 				var box3d2bg 	= new window.ui3d.bg($('#box02'), 'http://i.imgur.com/9lavKZs.jpg', {scaleUp: true, redraw: 'auto'});
-				box3d2.center(true, false);
+				box3d2.center(true, true);
+				box3d2.rotate('x', 45, "50% 50% 100%");
+				box3d2.set('opacity', 0.5);
+				//box3d2.xalign();
+				box3d2.redraw();
+				
+				
+				var sin1 = sinWave(0, 0, 360, function(v) {
+					box3d1.rotate('x', v+180, "50% 50% 100%");
+					box3d1.redraw();
+					box3d2.rotate('x', v, "50% 50% 100%");
+					box3d2.redraw();
+				});
+				
 				
 				var box3d3 	= new window.ui3d.box($('#box03'), {
 					duration:	0.5
 				});
-				var box3d3bg 	= new window.ui3d.bg($('#box03'), 'http://i.imgur.com/0J9pHMP.gif', {scaleUp: true, redraw: 'auto'});
+				var box3d3bg 	= new window.ui3d.bg($('#box03'), 'http://i.imgur.com/4HALnIM.gif', {scaleUp: true, redraw: 'auto'});
 				box3d3.center(false, true);
 				
-				
-				
-				
-				
-				
-				
-				$('#btnset').click(function() {
-					var val = $('#setval').val();
-					console.log("set",val*1);
-					box3d1.move({z:	val*1});
-				});
 				
 			});
 		</script>
